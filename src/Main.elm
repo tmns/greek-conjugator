@@ -10,7 +10,7 @@ import Html.Lazy exposing (lazy)
 import Json.Decode as Json
 import Task
 
-main : Program (Maybe Model) Model Msg
+main : Program () Model Msg
 main =
   Browser.document
     { init = init
@@ -21,7 +21,7 @@ main =
 
 
 
--- MODEL
+-- MODEL  
 
 
 type alias Model =
@@ -37,9 +37,9 @@ emptyModel =
   }
 
 
-init : Maybe Model -> ( Model, Cmd Msg )
-init maybeModel =
-  ( Maybe.withDefault emptyModel maybeModel 
+init : () -> ( Model, Cmd Msg )
+init _ =
+  ( emptyModel 
   , Cmd.none
   )
 
