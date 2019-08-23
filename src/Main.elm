@@ -1,5 +1,6 @@
 import Browser
 import Browser.Dom as Dom
+import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -21,7 +22,7 @@ main =
 
 
 type alias Model =
-  { conjugation : SingleConjugation
+  { conjugation : Dict String String
   , field : String
   }
 
@@ -35,14 +36,14 @@ type alias Model =
 --   , particple : SingleConjugation
 --   }
 
-type alias SingleConjugation =
-  { aEnikos : String
-  , bEnikos : String
-  , gEnikos : String
-  , aPlithintikos : String
-  , bPlithintikos : String
-  , gPlithintikos : String
-  }
+-- type alias SingleConjugation =
+--   { aEnikos : String
+--   , bEnikos : String
+--   , gEnikos : String
+--   , aPlithintikos : String
+--   , bPlithintikos : String
+--   , gPlithintikos : String
+--   }
 
 init : Maybe Model -> ( Model, Cmd Msg )
 init maybeModel =
@@ -79,30 +80,34 @@ update msg model =
               | field = ""
               , conjugation =
                 if String.endsWith "άω" str then
-                  { aEnikos = str
-                  , bEnikos = String.dropRight 1 str ++ "ς"
-                  , gEnikos = String.dropRight 1 str ++ "ει"
-                  , aPlithintikos = String.dropRight 1 str ++ "με"
-                  , bPlithintikos = String.dropRight 1 str ++ "τε"
-                  , gPlithintikos = String.dropRight 1 str ++ "νε"
-                  } 
+                  Dict.fromList
+                  [ ("aEnikos", str)
+                  , ("bEnikos", String.dropRight 1 str ++ "ς")
+                  , ("gEnikos", String.dropRight 1 str ++ "ει")
+                  , ("aPlithintikos", String.dropRight 1 str ++ "με")
+                  , ("bPlithintikos", String.dropRight 1 str ++ "τε")
+                  , ("gPlithintikos", String.dropRight 1 str ++ "νε")                  
+                  ]
                 
                 else if String.endsWith "ώ" str then
-                  { aEnikos = str
-                  , bEnikos = String.dropRight 1 str ++ "είς"
-                  , gEnikos = String.dropRight 1 str ++ "εί"
-                  , aPlithintikos = String.dropRight 1 str ++ "ούμε"
-                  , bPlithintikos = String.dropRight 1 str ++ "είτε"
-                  , gPlithintikos = String.dropRight 1 str ++ "ούνε"
-                  }                 
+                  Dict.fromList
+                  [ ("aEnikos", str)
+                  , ("bEnikos", String.dropRight 1 str ++ "είς")
+                  , ("gEnikos", String.dropRight 1 str ++ "εί")
+                  , ("aPlithintikos", String.dropRight 1 str ++ "ούμε")
+                  , ("bPlithintikos", String.dropRight 1 str ++ "είτε")
+                  , ("gPlithintikos", String.dropRight 1 str ++ "ούνε")
+                  ]
+
                 else
-                  { aEnikos = str
-                  , bEnikos = String.dropRight 1 ++ "εις"
-                  , gEnikos = String.dropRight 1 ++ "ει"
-                  , aPlithintikos = String.dropRight 1 ++ "ουμε"
-                  , bPlithintikos = String.dropRight 1 ++ "ετε"
-                  , gPlithintikos = String.dropRight 1 ++ "ουνε"
-                  } 
+                  Dict.fromList
+                  [ ("aEnikos", str)
+                  , ("bEnikos", String.dropRight 1 str ++ "εις")
+                  , ("gEnikos", String.dropRight 1 str ++ "ει")
+                  , ("aPlithintikos", String.dropRight 1 str ++ "ουμε")
+                  , ("bPlithintikos", String.dropRight 1 str ++ "ετε")
+                  , ("gPlithintikos", String.dropRight 1 str ++ "ουνε")
+                  ]
             }
             , Cmd.none
           )
@@ -133,6 +138,10 @@ viewInput verb =
       ]
       []
     ]
+
+viewConjugation : Dict String String -> Html Msg
+viewConjugation conjugation =
+
 
 
   
