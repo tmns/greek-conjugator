@@ -1,6 +1,7 @@
+port module Main exposing (..)
+
 import Browser
 import Browser.Dom as Dom
-import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -12,11 +13,11 @@ import Task
 main : Program (Maybe Model) Model Msg
 main =
   Browser.document
-  { init = init
-  , view = \model -> { title = "Greek Conjugator", body = [view model] }
-  , update = update
-  , subscriptions = \_ -> Sub.none
-  }
+    { init = init
+    , view = \model -> { title = "Greek Conjugator", body = [view model] }
+    , update = update
+    , subscriptions = \_ -> Sub.none
+    }
 
 
 
@@ -24,7 +25,7 @@ main =
 
 
 type alias Model =
-  { conjugation : Dict String String
+  { conjugation : List (String, String)
   , field : String
   }
 
@@ -51,7 +52,7 @@ type alias Model =
 
 emptyModel : Model 
 emptyModel =
-  { conjugation = Dict.empty 
+  { conjugation = []
   , field = ""
   }
 
@@ -91,34 +92,31 @@ update msg model =
           | field = ""
           , conjugation =
             if String.endsWith "άω" model.field then
-              Dict.fromList
-                [ ("aEnikos", model.field)
-                , ("bEnikos", String.dropRight 1 model.field ++ "ς")
-                , ("gEnikos", String.dropRight 1 model.field ++ "ει")
-                , ("aPlithintikos", String.dropRight 1 model.field ++ "με")
-                , ("bPlithintikos", String.dropRight 1 model.field ++ "τε")
-                , ("gPlithintikos", String.dropRight 1 model.field ++ "νε")                  
-                ]
+              [ ("aEnikos", model.field)
+              , ("bEnikos", String.dropRight 1 model.field ++ "ς")
+              , ("gEnikos", String.dropRight 1 model.field ++ "ει")
+              , ("aPlithintikos", String.dropRight 1 model.field ++ "με")
+              , ("bPlithintikos", String.dropRight 1 model.field ++ "τε")
+              , ("gPlithintikos", String.dropRight 1 model.field ++ "νε")                  
+              ]
             
             else if String.endsWith "ώ" model.field then
-              Dict.fromList
-                [ ("aEnikos", model.field)
-                , ("bEnikos", String.dropRight 1 model.field ++ "είς")
-                , ("gEnikos", String.dropRight 1 model.field ++ "εί")
-                , ("aPlithintikos", String.dropRight 1 model.field ++ "ούμε")
-                , ("bPlithintikos", String.dropRight 1 model.field ++ "είτε")
-                , ("gPlithintikos", String.dropRight 1 model.field ++ "ούνε")
-                ]
+              [ ("aEnikos", model.field)
+              , ("bEnikos", String.dropRight 1 model.field ++ "είς")
+              , ("gEnikos", String.dropRight 1 model.field ++ "εί")
+              , ("aPlithintikos", String.dropRight 1 model.field ++ "ούμε")
+              , ("bPlithintikos", String.dropRight 1 model.field ++ "είτε")
+              , ("gPlithintikos", String.dropRight 1 model.field ++ "ούνε")
+              ]
 
             else
-              Dict.fromList
-                [ ("aEnikos", model.field)
-                , ("bEnikos", String.dropRight 1 model.field ++ "εις")
-                , ("gEnikos", String.dropRight 1 model.field ++ "ει")
-                , ("aPlithintikos", String.dropRight 1 model.field ++ "ουμε")
-                , ("bPlithintikos", String.dropRight 1 model.field ++ "ετε")
-                , ("gPlithintikos", String.dropRight 1 model.field ++ "ουνε")
-                ]
+              [ ("aEnikos", model.field)
+              , ("bEnikos", String.dropRight 1 model.field ++ "εις")
+              , ("gEnikos", String.dropRight 1 model.field ++ "ει")
+              , ("aPlithintikos", String.dropRight 1 model.field ++ "ουμε")
+              , ("bPlithintikos", String.dropRight 1 model.field ++ "ετε")
+              , ("gPlithintikos", String.dropRight 1 model.field ++ "ουνε")
+              ]
         }
         , Cmd.none
       )
@@ -161,16 +159,13 @@ onEnter msg =
   in
     on "keydown" (Json.andThen isEnter keyCode)
 
-viewConjugations : Dict String String -> Html Msg
+viewConjugations : List (String, String) -> Html Msg
 viewConjugations conjugation =
   section []
   [ div [] <|
-    List.map viewConj (Dict.values conjugation)
+    List.map viewConj conjugation
   ]
 
-viewConj : String -> Html Msg
-viewConj conjVal =
-  p [] [ text conjVal ]
-  
-
-  
+viewConj : (String, String) -> Html Msg
+viewConj conjTuple =
+  p [] [ text (Tuple.second conjTuple) ]
