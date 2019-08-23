@@ -72,31 +72,33 @@ update msg model =
           | field = ""
           , conjugation =
             if String.endsWith "άω" model.field then
-              [ ("aEnikos", model.field)
-              , ("bEnikos", String.dropRight 1 model.field ++ "ς")
-              , ("gEnikos", String.dropRight 1 model.field ++ "ει")
-              , ("aPlithintikos", String.dropRight 1 model.field ++ "με")
-              , ("bPlithintikos", String.dropRight 1 model.field ++ "τε")
-              , ("gPlithintikos", String.dropRight 1 model.field ++ "νε")                  
+              [ ("εγώ", model.field)
+              , ("εσύ", String.dropRight 1 model.field ++ "ς")
+              , ("αυτός", String.dropRight 1 model.field ++ "ει")
+              , ("εμείς", String.dropRight 1 model.field ++ "με")
+              , ("εσείς", String.dropRight 1 model.field ++ "τε")
+              , ("αυτοί", String.dropRight 1 model.field ++ "ν(ε)")                  
               ]
             
             else if String.endsWith "ώ" model.field then
-              [ ("aEnikos", model.field)
-              , ("bEnikos", String.dropRight 1 model.field ++ "είς")
-              , ("gEnikos", String.dropRight 1 model.field ++ "εί")
-              , ("aPlithintikos", String.dropRight 1 model.field ++ "ούμε")
-              , ("bPlithintikos", String.dropRight 1 model.field ++ "είτε")
-              , ("gPlithintikos", String.dropRight 1 model.field ++ "ούνε")
+              [ ("εγώ", model.field)
+              , ("εσύ", String.dropRight 1 model.field ++ "είς")
+              , ("αυτός", String.dropRight 1 model.field ++ "εί")
+              , ("εμείς", String.dropRight 1 model.field ++ "ούμε")
+              , ("εσείς", String.dropRight 1 model.field ++ "είτε")
+              , ("αυτοί", String.dropRight 1 model.field ++ "ούν(ε)")
               ]
 
-            else
-              [ ("aEnikos", model.field)
-              , ("bEnikos", String.dropRight 1 model.field ++ "εις")
-              , ("gEnikos", String.dropRight 1 model.field ++ "ει")
-              , ("aPlithintikos", String.dropRight 1 model.field ++ "ουμε")
-              , ("bPlithintikos", String.dropRight 1 model.field ++ "ετε")
-              , ("gPlithintikos", String.dropRight 1 model.field ++ "ουνε")
+            else if String.endsWith "ω" model.field then
+              [ ("εγώ", model.field)
+              , ("εσύ", String.dropRight 1 model.field ++ "εις")
+              , ("αυτός", String.dropRight 1 model.field ++ "ει")
+              , ("εμείς", String.dropRight 1 model.field ++ "ουμε")
+              , ("εσείς", String.dropRight 1 model.field ++ "ετε")
+              , ("αυτοί", String.dropRight 1 model.field ++ "ουν(ε)")
               ]
+            else
+              [ ("Sorry,", "that's not a valid verb.")]
         }
         , Cmd.none
       )
@@ -148,4 +150,4 @@ viewConjugations conjugation =
 
 viewConj : (String, String) -> Html Msg
 viewConj conjTuple =
-  p [] [ text (Tuple.second conjTuple) ]
+  p [] [ text (Tuple.first conjTuple ++ " " ++ Tuple.second conjTuple) ]
