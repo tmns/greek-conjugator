@@ -4,7 +4,9 @@ import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Html.Lazy exposing (lazy, lazy2)
+import Html.Keyed as Keyed
+import Html.Lazy exposing (lazy)
+import Json.Decode as Json
 import Task
 
 main : Program (Maybe Model) Model Msg
@@ -26,6 +28,7 @@ type alias Model =
   , field : String
   }
 
+
 -- type alias FullConjugation =
 --   { present : SingleConjugation 
 --   , simplePast : SingleConjugation
@@ -45,6 +48,14 @@ type alias Model =
 --   , gPlithintikos : String
 --   }
 
+
+emptyModel : Model 
+emptyModel =
+  { conjugation = Dict.empty 
+  , field = ""
+  }
+
+
 init : Maybe Model -> ( Model, Cmd Msg )
 init maybeModel =
   ( Maybe.withDefault emptyModel maybeModel 
@@ -58,7 +69,7 @@ init maybeModel =
 type Msg
   = NoOp
   | UpdateField String
-  | ConjugateField String
+  | ConjugateField
 
 
 
@@ -75,42 +86,42 @@ update msg model =
       )
 
     
-    ConjugateField str ->
-          ( { model 
-              | field = ""
-              , conjugation =
-                if String.endsWith "άω" str then
-                  Dict.fromList
-                  [ ("aEnikos", str)
-                  , ("bEnikos", String.dropRight 1 str ++ "ς")
-                  , ("gEnikos", String.dropRight 1 str ++ "ει")
-                  , ("aPlithintikos", String.dropRight 1 str ++ "με")
-                  , ("bPlithintikos", String.dropRight 1 str ++ "τε")
-                  , ("gPlithintikos", String.dropRight 1 str ++ "νε")                  
-                  ]
-                
-                else if String.endsWith "ώ" str then
-                  Dict.fromList
-                  [ ("aEnikos", str)
-                  , ("bEnikos", String.dropRight 1 str ++ "είς")
-                  , ("gEnikos", String.dropRight 1 str ++ "εί")
-                  , ("aPlithintikos", String.dropRight 1 str ++ "ούμε")
-                  , ("bPlithintikos", String.dropRight 1 str ++ "είτε")
-                  , ("gPlithintikos", String.dropRight 1 str ++ "ούνε")
-                  ]
+    ConjugateField ->
+      ( { model 
+          | field = ""
+          , conjugation =
+            if String.endsWith "άω" model.field then
+              Dict.fromList
+                [ ("aEnikos", model.field)
+                , ("bEnikos", String.dropRight 1 model.field ++ "ς")
+                , ("gEnikos", String.dropRight 1 model.field ++ "ει")
+                , ("aPlithintikos", String.dropRight 1 model.field ++ "με")
+                , ("bPlithintikos", String.dropRight 1 model.field ++ "τε")
+                , ("gPlithintikos", String.dropRight 1 model.field ++ "νε")                  
+                ]
+            
+            else if String.endsWith "ώ" model.field then
+              Dict.fromList
+                [ ("aEnikos", model.field)
+                , ("bEnikos", String.dropRight 1 model.field ++ "είς")
+                , ("gEnikos", String.dropRight 1 model.field ++ "εί")
+                , ("aPlithintikos", String.dropRight 1 model.field ++ "ούμε")
+                , ("bPlithintikos", String.dropRight 1 model.field ++ "είτε")
+                , ("gPlithintikos", String.dropRight 1 model.field ++ "ούνε")
+                ]
 
-                else
-                  Dict.fromList
-                  [ ("aEnikos", str)
-                  , ("bEnikos", String.dropRight 1 str ++ "εις")
-                  , ("gEnikos", String.dropRight 1 str ++ "ει")
-                  , ("aPlithintikos", String.dropRight 1 str ++ "ουμε")
-                  , ("bPlithintikos", String.dropRight 1 str ++ "ετε")
-                  , ("gPlithintikos", String.dropRight 1 str ++ "ουνε")
-                  ]
-            }
-            , Cmd.none
-          )
+            else
+              Dict.fromList
+                [ ("aEnikos", model.field)
+                , ("bEnikos", String.dropRight 1 model.field ++ "εις")
+                , ("gEnikos", String.dropRight 1 model.field ++ "ει")
+                , ("aPlithintikos", String.dropRight 1 model.field ++ "ουμε")
+                , ("bPlithintikos", String.dropRight 1 model.field ++ "ετε")
+                , ("gPlithintikos", String.dropRight 1 model.field ++ "ουνε")
+                ]
+        }
+        , Cmd.none
+      )
         
 
 -- VIEW
@@ -118,19 +129,19 @@ update msg model =
 view : Model -> Html Msg
 view model = 
   div [] 
-    [ section
+    [ section []
       [ lazy viewInput model.field 
-      , lazy2 viewConjugation model.visibility model.conjugation
+      , lazy viewConjugations model.conjugation
       ]
     ]
 
 viewInput : String -> Html Msg
 viewInput verb =
-  header
+  header []
     [ h1 [] [ text "Greek Conjugator" ]
     , input
       [ placeholder "What verb would you like to conjugate?"
-      , autofocus true
+      , autofocus True
       , value verb
       , name "verb"
       , onInput UpdateField
@@ -139,9 +150,27 @@ viewInput verb =
       []
     ]
 
-viewConjugation : Dict String String -> Html Msg
-viewConjugation conjugation =
+onEnter : Msg -> Attribute Msg
+onEnter msg =
+  let
+    isEnter code =
+      if code == 13 then
+        Json.succeed msg
+      else
+        Json.fail "not ENTER"
+  in
+    on "keydown" (Json.andThen isEnter keyCode)
 
+viewConjugations : Dict String String -> Html Msg
+viewConjugations conjugation =
+  section []
+  [ div [] <|
+    List.map viewConj (Dict.values conjugation)
+  ]
 
+viewConj : String -> Html Msg
+viewConj conjVal =
+  p [] [ text conjVal ]
+  
 
   
