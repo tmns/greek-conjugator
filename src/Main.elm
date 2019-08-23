@@ -30,26 +30,6 @@ type alias Model =
   }
 
 
--- type alias FullConjugation =
---   { present : SingleConjugation 
---   , simplePast : SingleConjugation
---   , pastContinuous : SingleConjugation
---   , simpleFuture : SingleConjugation
---   , futureContinuous : SingleConjugation
---   , imperative : SingleConjugation
---   , particple : SingleConjugation
---   }
-
--- type alias SingleConjugation =
---   { aEnikos : String
---   , bEnikos : String
---   , gEnikos : String
---   , aPlithintikos : String
---   , bPlithintikos : String
---   , gPlithintikos : String
---   }
-
-
 emptyModel : Model 
 emptyModel =
   { conjugation = []
