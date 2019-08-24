@@ -144,7 +144,7 @@ onEnter msg =
 viewConjugations : List (String, String) -> Html Msg
 viewConjugations conjugation =
   section []
-  [ div [] <|
+  [ div [ class "conjugation" ] <|
     List.map viewConj conjugation
   ]
 
