@@ -40,7 +40,7 @@ emptyModel : Model
 emptyModel =
   { field = ""
   , tenses = 
-    [ { name = "ενεστώτας", isChecked = False, msg = (ChangeTense "enestwtas" ) }
+    [ { name = "ενεστώτας", isChecked = True, msg = (ChangeTense "enestwtas" ) }
     , { name = "αόριστος", isChecked = False, msg = (ChangeTense "aoristos" ) }
     , { name = "μέλλοντας", isChecked = False, msg = (ChangeTense "mellontas" ) }  
     ]
@@ -77,7 +77,6 @@ update msg model =
       ( { model | field = str }
       , Cmd.none
       )
-
     
     ConjugateField ->
       ( { model 
@@ -162,12 +161,10 @@ viewTenses tenses =
     List.map radio tenses
   ]
 
-radio : Tense -> Html msg
+radio : Tense -> Html Msg
 radio tense = 
-  label
-    [ style [("padding", "20px")]
-    ]
-    [ input [ type_ "radio", name tense.name, onInput tense.msg, checked tense.isChecked ] []
+  label []
+    [ input [ type_ "radio", name tense.name, onClick tense.msg, checked tense.isChecked ] []
     , text tense.name
     ]
 
