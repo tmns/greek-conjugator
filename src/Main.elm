@@ -25,15 +25,26 @@ main =
 
 
 type alias Model =
-  { conjugation : List (String, String)
-  , field : String
+  { field : String 
+  , tenses : List Tense
+  , conjugation : List (String, String)
   }
 
+type alias Tense =
+  { name : String
+  , isChecked : Bool
+  , msg : Msg
+  }
 
 emptyModel : Model 
 emptyModel =
-  { conjugation = []
-  , field = ""
+  { field = ""
+  , tenses = 
+    [ { name = "ενεστώτας", isChecked = False, msg = (ChangeTense "enestwtas" ) }
+    , { name = "αόριστος", isChecked = False, msg = (ChangeTense "aoristos" ) }
+    , { name = "μέλλοντας", isChecked = False, msg = (ChangeTense "mellontas" ) }  
+    ]
+  , conjugation = []
   }
 
 
@@ -50,6 +61,7 @@ init _ =
 type Msg
   = NoOp
   | UpdateField String
+  | ChangeTense String
   | ConjugateField
 
 
@@ -112,6 +124,7 @@ view model =
     [ section []
       [ lazy viewInput model.field 
       , lazy viewConjugations model.conjugation
+      , lazy viewTenses model.tenses
       ]
     ]
 
@@ -120,7 +133,8 @@ viewInput verb =
   header []
     [ h1 [] [ text "Greek Conjugator" ]
     , input
-      [ placeholder "What verb would you like to conjugate?"
+      [ class "verb-search"  
+      , placeholder "What verb would you like to conjugate?"
       , autofocus True
       , value verb
       , name "verb"
@@ -140,6 +154,22 @@ onEnter msg =
         Json.fail "not ENTER"
   in
     on "keydown" (Json.andThen isEnter keyCode)
+
+viewTenses : List Tense -> Html Msg
+viewTenses tenses =
+  div []
+  [ fieldset [] <|
+    List.map radio tenses
+  ]
+
+radio : Tense -> Html msg
+radio tense = 
+  label
+    [ style [("padding", "20px")]
+    ]
+    [ input [ type_ "radio", name tense.name, onInput tense.msg, checked tense.isChecked ] []
+    , text tense.name
+    ]
 
 viewConjugations : List (String, String) -> Html Msg
 viewConjugations conjugation =
