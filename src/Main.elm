@@ -82,7 +82,7 @@ update msg model =
     
     ConjugateField ->
       ( { model 
-          , conjugation =
+          | conjugation =
             if String.endsWith "άω" model.field then
               if model.currentTense == "enestwtas" then
                 [ ("εγώ", model.field)
@@ -91,15 +91,25 @@ update msg model =
                 , ("εμείς", String.dropRight 1 model.field ++ "με")
                 , ("εσείς", String.dropRight 1 model.field ++ "τε")
                 , ("αυτοί", String.dropRight 1 model.field ++ "ν(ε)")                  
-                ]
-              else if model.currentTense == "aoristos" then
-                [ ("εγώ", String.dropRight 1 model.field ++ "ήσα")
-                , ("εσύ", String.dropRight 1 model.field ++ "ήσες")
-                , ("αυτός", String.dropRight 1 model.field ++ "ήσε")
-                , ("εμείς", String.dropRight 1 model.field ++ "ήσαμε")
-                , ("εσείς", String.dropRight 1 model.field ++ "ήσατε")
-                , ("αυτοί", String.dropRight 1 model.field ++ "ήσανε")                  
+                ]         
+              else
+                [ ("εγώ", model.field)
+                , ("εσύ", String.dropRight 2 model.field ++ "ήσω")
+                , ("αυτός", String.dropRight 2 model.field ++ "ήσει")
+                , ("εμείς", String.dropRight 2 model.field ++ "ήσουμε")
+                , ("εσείς", String.dropRight 2 model.field ++ "ήσετε")
+                , ("αυτοί", String.dropRight 2 model.field ++ "ήσουν(ε)")                  
                 ]                
+            
+            else if String.endsWith "ώ" model.field then
+              if model.currentTense == "enestwtas" then
+                [ ("εγώ", model.field)
+                , ("εσύ", String.dropRight 1 model.field ++ "είς")
+                , ("αυτός", String.dropRight 1 model.field ++ "εί")
+                , ("εμείς", String.dropRight 1 model.field ++ "ούμε")
+                , ("εσείς", String.dropRight 1 model.field ++ "είτε")
+                , ("αυτοί", String.dropRight 1 model.field ++ "ούν(ε)")
+                ]              
               else
                 [ ("εγώ", model.field)
                 , ("εσύ", String.dropRight 1 model.field ++ "ήσω")
@@ -107,16 +117,7 @@ update msg model =
                 , ("εμείς", String.dropRight 1 model.field ++ "ήσουμε")
                 , ("εσείς", String.dropRight 1 model.field ++ "ήσετε")
                 , ("αυτοί", String.dropRight 1 model.field ++ "ήσουν(ε)")                  
-                ]                
-            
-            else if String.endsWith "ώ" model.field then
-              [ ("εγώ", model.field)
-              , ("εσύ", String.dropRight 1 model.field ++ "είς")
-              , ("αυτός", String.dropRight 1 model.field ++ "εί")
-              , ("εμείς", String.dropRight 1 model.field ++ "ούμε")
-              , ("εσείς", String.dropRight 1 model.field ++ "είτε")
-              , ("αυτοί", String.dropRight 1 model.field ++ "ούν(ε)")
-              ]
+                ]  
 
             else if String.endsWith "ω" model.field then
               [ ("εγώ", model.field)
@@ -125,13 +126,18 @@ update msg model =
               , ("εμείς", String.dropRight 1 model.field ++ "ουμε")
               , ("εσείς", String.dropRight 1 model.field ++ "ετε")
               , ("αυτοί", String.dropRight 1 model.field ++ "ουν(ε)")
-              ]
+              ] 
+              
             else
               [ ("Sorry,", "that's not a valid verb.")]
         }
         , Cmd.none
       )
         
+    ChangeTense tense ->
+      ( { model | currentTense = tense }
+      , Cmd.none
+      )
 
 -- VIEW
 
