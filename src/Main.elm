@@ -27,6 +27,7 @@ main =
 type alias Model =
   { field : String 
   , tenses : List Tense
+  , currentTense : String
   , conjugation : List (String, String)
   }
 
@@ -44,6 +45,7 @@ emptyModel =
     , { name = "αόριστος", isChecked = False, msg = (ChangeTense "aoristos" ) }
     , { name = "μέλλοντας", isChecked = False, msg = (ChangeTense "mellontas" ) }  
     ]
+  , currentTense = "enestwtas"
   , conjugation = []
   }
 
@@ -80,16 +82,32 @@ update msg model =
     
     ConjugateField ->
       ( { model 
-          | field = ""
           , conjugation =
             if String.endsWith "άω" model.field then
-              [ ("εγώ", model.field)
-              , ("εσύ", String.dropRight 1 model.field ++ "ς")
-              , ("αυτός", String.dropRight 1 model.field ++ "ει")
-              , ("εμείς", String.dropRight 1 model.field ++ "με")
-              , ("εσείς", String.dropRight 1 model.field ++ "τε")
-              , ("αυτοί", String.dropRight 1 model.field ++ "ν(ε)")                  
-              ]
+              if model.currentTense == "enestwtas" then
+                [ ("εγώ", model.field)
+                , ("εσύ", String.dropRight 1 model.field ++ "ς")
+                , ("αυτός", String.dropRight 1 model.field ++ "ει")
+                , ("εμείς", String.dropRight 1 model.field ++ "με")
+                , ("εσείς", String.dropRight 1 model.field ++ "τε")
+                , ("αυτοί", String.dropRight 1 model.field ++ "ν(ε)")                  
+                ]
+              else if model.currentTense == "aoristos" then
+                [ ("εγώ", String.dropRight 1 model.field ++ "ήσα")
+                , ("εσύ", String.dropRight 1 model.field ++ "ήσες")
+                , ("αυτός", String.dropRight 1 model.field ++ "ήσε")
+                , ("εμείς", String.dropRight 1 model.field ++ "ήσαμε")
+                , ("εσείς", String.dropRight 1 model.field ++ "ήσατε")
+                , ("αυτοί", String.dropRight 1 model.field ++ "ήσανε")                  
+                ]                
+              else
+                [ ("εγώ", model.field)
+                , ("εσύ", String.dropRight 1 model.field ++ "ήσω")
+                , ("αυτός", String.dropRight 1 model.field ++ "ήσει")
+                , ("εμείς", String.dropRight 1 model.field ++ "ήσουμε")
+                , ("εσείς", String.dropRight 1 model.field ++ "ήσετε")
+                , ("αυτοί", String.dropRight 1 model.field ++ "ήσουν(ε)")                  
+                ]                
             
             else if String.endsWith "ώ" model.field then
               [ ("εγώ", model.field)
