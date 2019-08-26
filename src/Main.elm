@@ -41,11 +41,11 @@ emptyModel : Model
 emptyModel =
   { field = ""
   , tenses = 
-    [ { name = "ενεστώτας", isChecked = True, msg = (ChangeTense "enestwtas" ) }
-    , { name = "αόριστος", isChecked = False, msg = (ChangeTense "aoristos" ) }
-    , { name = "μέλλοντας", isChecked = False, msg = (ChangeTense "mellontas" ) }  
+    [ { name = "ενεστώτας", isChecked = True, msg = (ChangeTense "ενεστώτας" ) }
+    , { name = "αόριστος", isChecked = False, msg = (ChangeTense "αόριστος" ) }
+    , { name = "μέλλοντας", isChecked = False, msg = (ChangeTense "μέλλοντας" ) }  
     ]
-  , currentTense = "enestwtas"
+  , currentTense = "ενεστώτας"
   , conjugation = []
   }
 
@@ -64,6 +64,7 @@ type Msg
   = NoOp
   | UpdateField String
   | ChangeTense String
+  | UpdateTense Tense String
   | ConjugateField
 
 
@@ -84,7 +85,7 @@ update msg model =
       ( { model 
           | conjugation =
             if String.endsWith "άω" model.field then
-              if model.currentTense == "enestwtas" then
+              if model.currentTense == "ενεστώτας" then
                 [ ("εγώ", model.field)
                 , ("εσύ", String.dropRight 1 model.field ++ "ς")
                 , ("αυτός", String.dropRight 1 model.field ++ "ει")
@@ -102,7 +103,7 @@ update msg model =
                 ]                
             
             else if String.endsWith "ώ" model.field then
-              if model.currentTense == "enestwtas" then
+              if model.currentTense == "ενεστώτας" then
                 [ ("εγώ", model.field)
                 , ("εσύ", String.dropRight 1 model.field ++ "είς")
                 , ("αυτός", String.dropRight 1 model.field ++ "εί")
@@ -135,9 +136,14 @@ update msg model =
       )
         
     ChangeTense tense ->
-      ( { model | currentTense = tense }
+      
+      ( { model 
+        | currentTense = tense
+        , tenses = List.map updateTense model.tenses tense
+      }
       , Cmd.none
       )
+
 
 -- VIEW
 
