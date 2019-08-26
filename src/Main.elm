@@ -92,8 +92,8 @@ update msg model =
                 , ("αυτοί", String.dropRight 1 model.field ++ "ν(ε)")                  
                 ]         
               else
-                [ ("εγώ", String.dropRight 1 model.field ++ "ήσω")
-                , ("εσύ", String.dropRight 1 model.field ++ "ήσεις")
+                [ ("εγώ", String.dropRight 2 model.field ++ "ήσω")
+                , ("εσύ", String.dropRight 2 model.field ++ "ήσεις")
                 , ("αυτός", String.dropRight 2 model.field ++ "ήσει")
                 , ("εμείς", String.dropRight 2 model.field ++ "ήσουμε")
                 , ("εσείς", String.dropRight 2 model.field ++ "ήσετε")
