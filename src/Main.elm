@@ -42,7 +42,6 @@ emptyModel =
   { field = ""
   , tenses = 
     [ { name = "ενεστώτας", isChecked = True, msg = (ChangeTense "ενεστώτας" ) }
-    , { name = "αόριστος", isChecked = False, msg = (ChangeTense "αόριστος" ) }
     , { name = "μέλλοντας", isChecked = False, msg = (ChangeTense "μέλλοντας" ) }  
     ]
   , currentTense = "ενεστώτας"
