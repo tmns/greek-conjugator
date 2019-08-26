@@ -64,7 +64,6 @@ type Msg
   = NoOp
   | UpdateField String
   | ChangeTense String
-  | UpdateTense Tense String
   | ConjugateField
 
 
@@ -94,8 +93,8 @@ update msg model =
                 , ("αυτοί", String.dropRight 1 model.field ++ "ν(ε)")                  
                 ]         
               else
-                [ ("εγώ", model.field)
-                , ("εσύ", String.dropRight 2 model.field ++ "ήσω")
+                [ ("εγώ", String.dropRight 1 model.field ++ "ήσω")
+                , ("εσύ", String.dropRight 1 model.field ++ "ήσεις")
                 , ("αυτός", String.dropRight 2 model.field ++ "ήσει")
                 , ("εμείς", String.dropRight 2 model.field ++ "ήσουμε")
                 , ("εσείς", String.dropRight 2 model.field ++ "ήσετε")
@@ -112,8 +111,8 @@ update msg model =
                 , ("αυτοί", String.dropRight 1 model.field ++ "ούν(ε)")
                 ]              
               else
-                [ ("εγώ", model.field)
-                , ("εσύ", String.dropRight 1 model.field ++ "ήσω")
+                [ ("εγώ", String.dropRight 1 model.field ++ "ήσω")
+                , ("εσύ", String.dropRight 1 model.field ++ "ήσεις")
                 , ("αυτός", String.dropRight 1 model.field ++ "ήσει")
                 , ("εμείς", String.dropRight 1 model.field ++ "ήσουμε")
                 , ("εσείς", String.dropRight 1 model.field ++ "ήσετε")
@@ -136,10 +135,16 @@ update msg model =
       )
         
     ChangeTense tense ->
-      
+      let
+        updateTense tenseToUpdate =
+          if tenseToUpdate.name == tense then
+            { tenseToUpdate | isChecked = True }
+          else
+            { tenseToUpdate | isChecked = False }
+      in
       ( { model 
         | currentTense = tense
-        , tenses = List.map updateTense model.tenses tense
+        , tenses = List.map updateTense model.tenses
       }
       , Cmd.none
       )
@@ -161,16 +166,17 @@ viewInput : String -> Html Msg
 viewInput verb =
   header []
     [ h1 [] [ text "Greek Conjugator" ]
-    , input
-      [ class "verb-search"  
-      , placeholder "What verb would you like to conjugate?"
-      , autofocus True
-      , value verb
-      , name "verb"
-      , onInput UpdateField
-      , onEnter ConjugateField
+    , div [ class "verb-search" ]
+      [ input
+        [  placeholder "What verb would you like to conjugate?"
+        , autofocus True
+        , value verb
+        , name "verb"
+        , onInput UpdateField
+        , onEnter ConjugateField
+        ]
+        []
       ]
-      []
     ]
 
 onEnter : Msg -> Attribute Msg
@@ -186,8 +192,8 @@ onEnter msg =
 
 viewTenses : List Tense -> Html Msg
 viewTenses tenses =
-  div []
-  [ fieldset [] <|
+  div [ class "controls" ]
+  [ fieldset [ class "controls" ] <|
     List.map radio tenses
   ]
 

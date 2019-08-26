@@ -44,3 +44,8 @@ header {
   font-size: 20px;
 }
 
+.controls {
+  width: 50%;
+  margin: 0 auto;
+  border: none;
+}
