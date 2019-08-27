@@ -1,5 +1,3 @@
 # Greek Verb Conjugator
 
-A simple app that conjugates Greek verbs for you. Built with the help of Elm.
-
-Under heavy construction!
+A simple app I built to help myself learn some Elm fundamentals. It conjugates common Greek verbs in present and future tense.
